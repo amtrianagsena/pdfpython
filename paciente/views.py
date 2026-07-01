@@ -4,9 +4,17 @@ from django.views.generic import (
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.utils import ImageReader
+
 from .models import Paciente
+
+import os
+from datetime import datetime
 
 
 # 🔍 LIST + SEARCH
@@ -56,35 +64,76 @@ def generar_pdf_paciente(request, pk):
     paciente = get_object_or_404(Paciente, id=pk)
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="paciente_{paciente.nombre}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="receta_{paciente.id}.pdf"'
 
-    p = canvas.Canvas(response)
-    y = 800
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
 
-    p.setFont("Helvetica-Bold", 14)
-    p.drawString(100, y, "RECETA MÉDICA / MEDICAMENTOS")
-    y -= 40
+    # 🖼 LOGO
+    logo_path = os.path.join(settings.BASE_DIR, "static/img/logo.png")
+    if os.path.exists(logo_path):
+        logo = ImageReader(logo_path)
+        p.drawImage(logo, 40, height - 100, width=80, height=80)
 
-    p.setFont("Helvetica", 12)
-    p.drawString(100, y, f"Paciente: {paciente.nombre}")
-    y -= 20
-    p.drawString(100, y, f"Documento: {paciente.documento}")
-    y -= 40
+    # 🏥 ENCABEZADO
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(150, height - 50, "CLÍNICA MÉDICA - RECETA MÉDICA")
 
+    p.setStrokeColor(colors.black)
+    p.line(40, height - 110, 570, height - 110)
+
+    # 📅 FECHA
+    fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
+    p.setFont("Helvetica", 10)
+    p.drawString(450, height - 130, f"Fecha: {fecha}")
+
+    # 👤 DATOS PACIENTE
+    y = height - 170
     p.setFont("Helvetica-Bold", 12)
-    p.drawString(100, y, "Medicamentos:")
+    p.drawString(40, y, "DATOS DEL PACIENTE")
     y -= 20
 
-    p.setFont("Helvetica", 12)
+    p.setFont("Helvetica", 11)
+    p.drawString(40, y, f"Nombre: {paciente.nombre}")
+    y -= 15
+    p.drawString(40, y, f"Documento: {paciente.documento}")
+    y -= 15
+    p.drawString(40, y, f"Fecha nacimiento: {paciente.fecha_nacimiento}")
 
-    for m in paciente.medicinas.all():
-        p.drawString(120, y, f"- {m.nombre}")
-        y -= 20
+    # 💊 MEDICAMENTOS
+    y -= 40
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(40, y, "MEDICAMENTOS RECETADOS")
+    y -= 25
 
+    # 🧾 TABLA SIMPLIFICADA
+    p.setFont("Helvetica-Bold", 10)
+    p.drawString(50, y, "N°")
+    p.drawString(100, y, "Medicamento")
+    p.drawString(350, y, "Descripción")
+    y -= 15
+
+    p.line(40, y, 570, y)
+    y -= 20
+
+    p.setFont("Helvetica", 10)
+
+    for i, m in enumerate(paciente.medicinas.all(), start=1):
         if y < 100:
             p.showPage()
-            y = 800
+            y = height - 100
 
+        p.drawString(50, y, str(i))
+        p.drawString(100, y, m.nombre[:30])
+        p.drawString(350, y, (m.descripcion[:40] if m.descripcion else "-"))
+        y -= 20
+
+    # 🧾 FIRMA
+    y -= 60
+    p.line(400, y, 550, y)
+    p.drawString(420, y - 15, "Firma del médico")
+
+    # 🏁 FINAL
     p.showPage()
     p.save()
 
