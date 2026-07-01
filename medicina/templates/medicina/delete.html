@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="text-danger">🗑 Eliminar medicina</h1>
+
+<div class="alert alert-warning">
+    ¿Seguro que deseas eliminar:
+    <b>{{ object.nombre }}</b>?
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button class="btn btn-danger">
+        Sí, eliminar
+    </button>
+
+    <a href="{% url 'medicina_list' %}" class="btn btn-secondary">
+        Cancelar
+    </a>
+</form>
+
+{% endblock %}

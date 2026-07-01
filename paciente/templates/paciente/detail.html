@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ object.nombre }}</h2>
+
+<p><b>Documento:</b> {{ object.documento }}</p>
+
+<h4>Medicamentos</h4>
+<ul>
+    {% for m in object.medicinas.all %}
+        <li>{{ m.nombre }}</li>
+    {% endfor %}
+</ul>
+
+<a class="btn btn-success" href="{% url 'paciente_pdf' object.id %}">
+    Descargar PDF
+</a>
+
+<a class="btn btn-secondary" href="{% url 'paciente_list' %}">
+    Volver
+</a>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="mb-3">💊 Medicinas</h1>
+
+<a class="btn btn-primary mb-3" href="{% url 'medicina_create' %}">
+    + Nueva medicina
+</a>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th style="width: 200px;">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for m in medicinas %}
+        <tr>
+            <td>{{ m.nombre }}</td>
+            <td>{{ m.descripcion }}</td>
+            <td>
+                <a class="btn btn-warning btn-sm"
+                   href="{% url 'medicina_update' m.id %}">
+                    Editar
+                </a>
+
+                <a class="btn btn-danger btn-sm"
+                   href="{% url 'medicina_delete' m.id %}">
+                    Eliminar
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" class="text-center">
+                No hay medicinas registradas
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
