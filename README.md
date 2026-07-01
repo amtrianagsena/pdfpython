@@ -50,7 +50,11 @@ dot -V
 
 Si el comando muestra la versión de Graphviz, la instalación fue exitosa.
 
-7. Generar el diagrama
+7. Generar el diagrama:
 python manage.py graph_models -a -o modelo.png
 
-Al finalizar, se generará el archivo modelo.png en la carpeta principal del proyecto con el diagrama de la base de datos.
+Al finalizar, se generará el archivo modelo.png en la carpeta principal del proyecto con el diagrama de la base de datos*, similar al diagrama de clases.
+
+Ejemplo:
+<img width="1401" height="1234" alt="image" src="https://github.com/user-attachments/assets/b04edfdc-a2b4-4380-8834-8b18a9d74f2c" />
+
