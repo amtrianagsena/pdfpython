@@ -25,9 +25,11 @@ INSTALLED_APPS = [
     ...
     'django_extensions',
 ]
-3. Instalar pydotplus
+
+3. Instalar pydotplus:
 python -m pip install pydotplus
-4. Descargar Graphviz
+
+4. Descargar Graphviz.
 
 Descarga la versión ZIP desde el sitio oficial:
 
@@ -43,7 +45,7 @@ set PATH=C:\Users\aprendiz\Downloads\Graphviz-15.0.0-win32\bin;%PATH%
 
 Nota: Ajusta la ruta según la ubicación donde hayas descomprimido Graphviz.
 
-6. Verificar la instalación
+6. Verificar la instalación:
 dot -V
 
 Si el comando muestra la versión de Graphviz, la instalación fue exitosa.
