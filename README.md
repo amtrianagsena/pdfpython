@@ -7,14 +7,19 @@ pip
 Instala las dependencias necesarias:
 
 python -m pip install django
+
 python -m pip install reportlab
+
 🗄️ Configuración de la base de datos
 
 Crea las migraciones y aplica los cambios:
 
 python manage.py makemigrations
+
 python manage.py migrate
+
 📊 Generar el diagrama de la base de datos
+
 1. Instalar django-extensions
 python -m pip install django-extensions
 2. Agregar la aplicación a Django
